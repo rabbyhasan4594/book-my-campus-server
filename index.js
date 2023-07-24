@@ -60,6 +60,22 @@ async function run() {
             const result = await admissionCollection.insertOne(body);
             res.send(result)
         })
+        app.get('/details/:id',async (req, res) => {
+            const result = await collegesCollection.findOne({
+                _id: new ObjectId(req.params.id),
+              });
+              res.send(result);
+            
+        });
+
+        app.get("/myCollege/:email", async (req, res) => {
+            const result = await admissionCollection
+                .find({
+                    email: req.params.email,
+                })
+                .toArray();
+            res.send(result);
+        })
        
 
 
