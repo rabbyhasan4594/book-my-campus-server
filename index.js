@@ -16,7 +16,7 @@ app.use(express.json());
 //mongoDb
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.2yyawyx.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -34,6 +34,7 @@ async function run() {
     // await client.connect();
     client.connect();
         const collegesCollection = client.db('bookMyCampus').collection('colleges');
+        const admissionCollection = client.db('bookMyCampus').collection('admission');
 
 
 
@@ -41,7 +42,24 @@ async function run() {
             const result = await collegesCollection.find({}).toArray();
             res.send(result);
         })
+ app.get('/collegesSection', async (req, res) => {
+            const result = await collegesCollection.find({}).limit(3).toArray();
+            res.send(result);
+        })
 
+
+        app.get('/college/:id',async (req, res) => {
+            const result = await collegesCollection.findOne({
+                _id: new ObjectId(req.params.id),
+              });
+              res.send(result);
+            
+        });
+        app.post("/admission", async (req, res) => {
+            const body = req.body;
+            const result = await admissionCollection.insertOne(body);
+            res.send(result)
+        })
        
 
 
